@@ -9,6 +9,7 @@ setupGui({
   initialGridVisible: true,
   initialNumbersVisible: true,
   initialSnapEnabled: true,
+  initialPieceSnapEnabled: true,
   initialCollisionEnabled: true,
   onGridVisibilityChange: (visible) => {
     puzzleScene.setGridVisible(visible)
@@ -18,6 +19,9 @@ setupGui({
   },
   onSnapChange: (enabled) => {
     puzzleScene.setSnapEnabled(enabled)
+  },
+  onPieceSnapChange: (enabled) => {
+    puzzleScene.setPieceSnapEnabled(enabled)
   },
   onCollisionChange: (enabled) => {
     puzzleScene.setCollisionEnabled(enabled)

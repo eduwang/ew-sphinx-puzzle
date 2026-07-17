@@ -72,6 +72,7 @@ export class PuzzleScene {
       triangleSize: TRIANGLE_SIZE,
       gridRotationZ: GRID_ROTATION_Z,
       initialSnapEnabled: true,
+      initialPieceSnapEnabled: true,
       initialCollisionEnabled: true,
       getIsCameraPanning: () => this.cameraControls.isPanning(),
       getIsPlacingPuzzle: () => this.placingPuzzle,
@@ -239,6 +240,10 @@ export class PuzzleScene {
 
   setSnapEnabled(enabled) {
     this.interaction.setSnapEnabled(enabled)
+  }
+
+  setPieceSnapEnabled(enabled) {
+    this.interaction.setPieceSnapEnabled(enabled)
   }
 
   setCollisionEnabled(enabled) {

@@ -7,6 +7,7 @@ import {
 } from './trianglePiece.js'
 import { snapToTriangularGrid } from './triangularGrid.js'
 import { pieceOverlapsOthers } from './collision.js'
+import { getPieceSnapOffset } from './pieceSnap.js'
 
 /**
  * 퍼즐 조각 클릭/드래그/키보드 조작을 연결합니다.
@@ -18,6 +19,7 @@ export function setupPieceInteraction({
   triangleSize = 1,
   gridRotationZ = Math.PI / 6,
   initialSnapEnabled = true,
+  initialPieceSnapEnabled = true,
   initialCollisionEnabled = true,
   onEmptyPointerDown = null,
   getIsCameraPanning = () => false,
@@ -35,21 +37,64 @@ export function setupPieceInteraction({
   let selectedPiece = null
   let dragPiece = null
   let snapEnabled = initialSnapEnabled
+  let pieceSnapEnabled = initialPieceSnapEnabled
   let collisionEnabled = initialCollisionEnabled
   let lastValidX = 0
   let lastValidY = 0
 
-  const snapPiece = (piece) => {
+  const getGridSnapOffset = (piece) => {
     const pivot = getPiecePivotWorld(piece)
-    if (!pivot) return
+    if (!pivot) return null
 
     const snapped = snapToTriangularGrid(
       pivot,
       triangleSize,
       gridRotationZ,
     )
-    piece.position.x += snapped.x - pivot.x
-    piece.position.y += snapped.y - pivot.y
+    return {
+      x: snapped.x - pivot.x,
+      y: snapped.y - pivot.y,
+    }
+  }
+
+  const applyOffset = (piece, offset) => {
+    if (!offset) return
+    piece.position.x += offset.x
+    piece.position.y += offset.y
+  }
+
+  const snapPieceToGrid = (piece) => {
+    applyOffset(piece, getGridSnapOffset(piece))
+  }
+
+  const applyDragSnap = (piece) => {
+    const candidates = []
+
+    if (snapEnabled) {
+      const offset = getGridSnapOffset(piece)
+      if (offset) candidates.push(offset)
+    }
+
+    if (pieceSnapEnabled) {
+      const offset = getPieceSnapOffset(
+        piece,
+        getPieces(),
+        triangleSize * 0.24,
+      )
+      if (offset) candidates.push(offset)
+    }
+
+    let nearest = null
+    let nearestDistanceSquared = Infinity
+    for (const offset of candidates) {
+      const distanceSquared = offset.x ** 2 + offset.y ** 2
+      if (distanceSquared < nearestDistanceSquared) {
+        nearestDistanceSquared = distanceSquared
+        nearest = offset
+      }
+    }
+
+    applyOffset(piece, nearest)
   }
 
   const setPointerFromEvent = (event) => {
@@ -127,20 +172,28 @@ export function setupPieceInteraction({
     const hit = getPlanePoint(event)
     if (!hit) return
 
-    dragPiece.position.x = hit.x + dragOffset.x
-    dragPiece.position.y = hit.y + dragOffset.y
+    const rawX = hit.x + dragOffset.x
+    const rawY = hit.y + dragOffset.y
+    dragPiece.position.x = rawX
+    dragPiece.position.y = rawY
 
-    if (snapEnabled) {
-      snapPiece(dragPiece)
+    if (snapEnabled || pieceSnapEnabled) {
+      applyDragSnap(dragPiece)
     }
 
     if (
       collisionEnabled &&
       pieceOverlapsOthers(dragPiece, getPieces())
     ) {
-      dragPiece.position.x = lastValidX
-      dragPiece.position.y = lastValidY
-      return
+      // 스냅 결과만 충돌한다면 스냅 전 드래그 위치는 허용합니다.
+      dragPiece.position.x = rawX
+      dragPiece.position.y = rawY
+
+      if (pieceOverlapsOthers(dragPiece, getPieces())) {
+        dragPiece.position.x = lastValidX
+        dragPiece.position.y = lastValidY
+        return
+      }
     }
 
     lastValidX = dragPiece.position.x
@@ -168,7 +221,7 @@ export function setupPieceInteraction({
       // 뒤집기도 충돌 검사 없이 허용
       flipPiece(selectedPiece)
       if (snapEnabled) {
-        snapPiece(selectedPiece)
+        snapPieceToGrid(selectedPiece)
       }
       event.preventDefault()
     }
@@ -186,9 +239,12 @@ export function setupPieceInteraction({
       snapEnabled = enabled
       if (enabled) {
         for (const piece of getPieces()) {
-          snapPiece(piece)
+          snapPieceToGrid(piece)
         }
       }
+    },
+    setPieceSnapEnabled(enabled) {
+      pieceSnapEnabled = enabled
     },
     setCollisionEnabled(enabled) {
       collisionEnabled = enabled

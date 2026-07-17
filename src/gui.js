@@ -26,12 +26,14 @@ export function setupGui({
   onGridVisibilityChange,
   onNumbersVisibilityChange,
   onSnapChange,
+  onPieceSnapChange,
   onCollisionChange,
   onReset,
   onAddPuzzle,
   initialGridVisible = true,
   initialNumbersVisible = true,
   initialSnapEnabled = true,
+  initialPieceSnapEnabled = true,
   initialCollisionEnabled = true,
 }) {
   const settingsGui = new GUI({ title: '설정' })
@@ -41,6 +43,7 @@ export function setupGui({
     showGrid: initialGridVisible,
     showNumbers: initialNumbersVisible,
     snapToGrid: initialSnapEnabled,
+    snapToPieces: initialPieceSnapEnabled,
     preventOverlap: initialCollisionEnabled,
   }
 
@@ -58,6 +61,11 @@ export function setupGui({
     .add(settings, 'snapToGrid')
     .name('격자 스냅')
     .onChange(onSnapChange)
+
+  settingsGui
+    .add(settings, 'snapToPieces')
+    .name('도형 스냅')
+    .onChange(onPieceSnapChange)
 
   settingsGui
     .add(settings, 'preventOverlap')
