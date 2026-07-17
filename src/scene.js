@@ -1,6 +1,9 @@
 import * as THREE from 'three'
 import { createTriangularGrid, snapToTriangularGrid } from './triangularGrid.js'
-import { setPieceNumbersVisible } from './trianglePiece.js'
+import {
+  setPieceNumbersVisible,
+  syncLabelOrientation,
+} from './trianglePiece.js'
 import { createPuzzleSet } from './puzzleSet.js'
 import { setupPieceInteraction } from './interaction.js'
 import { setupCameraControls } from './cameraControls.js'
@@ -28,7 +31,7 @@ function disposeObject(object) {
 }
 
 export class PuzzleScene {
-  constructor() {
+  constructor({ enableDelete = false } = {}) {
     this.scene = new THREE.Scene()
     this.scene.background = new THREE.Color(BACKGROUND_COLOR)
 
@@ -52,6 +55,7 @@ export class PuzzleScene {
     this.baseFrustumWidth = BASE_FRUSTUM_HEIGHT
     this.view = { width: 0, height: 0 }
     this.gridRefreshTimer = null
+    this.onPiecesChange = null
 
     this.addPuzzleSet({ x: 0, y: 1 })
 
@@ -74,11 +78,13 @@ export class PuzzleScene {
       initialSnapEnabled: true,
       initialPieceSnapEnabled: true,
       initialCollisionEnabled: true,
+      initialDeleteEnabled: enableDelete,
       getIsCameraPanning: () => this.cameraControls.isPanning(),
       getIsPlacingPuzzle: () => this.placingPuzzle,
       getIsCapturingSet: () => this.capturingSet,
       onPlacePuzzleClick: (point) => this.finishPlacePuzzle(point),
       onCaptureSetClick: (piece) => this.finishCaptureSet(piece),
+      onDeletePiece: (piece) => this.removePieceObject(piece),
       onEmptyPointerDown: (event) => {
         this.cameraControls.startPanFromEmptySpace(event)
       },
@@ -105,6 +111,7 @@ export class PuzzleScene {
       this.pieces.push(piece)
     }
 
+    this.notifyPiecesChange()
     return pieces
   }
 
@@ -116,12 +123,160 @@ export class PuzzleScene {
     })
   }
 
+  getSetIds() {
+    const ids = new Set()
+    for (const piece of this.pieces) {
+      if (piece.userData.setId != null) ids.add(piece.userData.setId)
+    }
+    return [...ids].sort((a, b) => a - b)
+  }
+
+  notifyPiecesChange() {
+    this.onPiecesChange?.()
+  }
+
+  removePiece(setId, pieceNumber) {
+    const index = this.pieces.findIndex(
+      (piece) =>
+        piece.userData.setId === setId &&
+        piece.userData.pieceNumber === pieceNumber,
+    )
+    if (index < 0) return false
+
+    const [piece] = this.pieces.splice(index, 1)
+    this.interaction?.clearSelection()
+    this.scene.remove(piece)
+    disposeObject(piece)
+    this.notifyPiecesChange()
+    return true
+  }
+
+  removePieceObject(piece) {
+    if (!piece) return false
+    const index = this.pieces.indexOf(piece)
+    if (index < 0) return false
+
+    this.pieces.splice(index, 1)
+    this.interaction?.clearSelection()
+    this.scene.remove(piece)
+    disposeObject(piece)
+    this.notifyPiecesChange()
+    return true
+  }
+
+  exportLayout() {
+    const pieces = this.pieces
+      .map((piece) => ({
+        setId: piece.userData.setId,
+        pieceNumber: piece.userData.pieceNumber,
+        position: {
+          x: piece.position.x,
+          y: piece.position.y,
+          z: piece.position.z,
+        },
+        rotationZ: piece.rotation.z,
+        scaleX: piece.scale.x,
+        flipped: piece.scale.x < 0,
+      }))
+      .sort((a, b) => {
+        if (a.setId !== b.setId) return a.setId - b.setId
+        return a.pieceNumber - b.pieceNumber
+      })
+
+    return {
+      version: 1,
+      format: 'ew-sphinx-puzzle-layout',
+      exportedAt: new Date().toISOString(),
+      triangleSize: TRIANGLE_SIZE,
+      gridRotationZ: GRID_ROTATION_Z,
+      camera: {
+        x: this.camera.position.x,
+        y: this.camera.position.y,
+        zoom: this.camera.zoom,
+      },
+      pieces,
+    }
+  }
+
+  importLayout(layout) {
+    if (!layout || !Array.isArray(layout.pieces)) {
+      throw new Error('올바른 퍼즐 배치 JSON이 아닙니다.')
+    }
+
+    this.clearPieces()
+
+    const entriesBySet = new Map()
+    for (const entry of layout.pieces) {
+      const setId = Number(entry.setId)
+      const pieceNumber = Number(entry.pieceNumber)
+
+      if (!Number.isFinite(setId) || !Number.isFinite(pieceNumber)) continue
+      if (!entriesBySet.has(setId)) {
+        entriesBySet.set(setId, [])
+      }
+      entriesBySet.get(setId).push(entry)
+    }
+
+    let maxSetId = 0
+    for (const [setId, entries] of entriesBySet) {
+      maxSetId = Math.max(maxSetId, setId)
+
+      const entriesByPieceNumber = new Map(
+        entries.map((entry) => [Number(entry.pieceNumber), entry]),
+      )
+      const pieces = createPuzzleSet({
+        size: TRIANGLE_SIZE,
+        pivotWorld: { x: 0, y: 1 },
+        gridRotationZ: GRID_ROTATION_Z,
+        showNumber: this.showNumbers,
+        setId,
+      })
+
+      for (const piece of pieces) {
+        const entry = entriesByPieceNumber.get(piece.userData.pieceNumber)
+        if (!entry) {
+          disposeObject(piece)
+          continue
+        }
+
+        const position = entry.position ?? {}
+        piece.position.set(
+          Number(position.x) || 0,
+          Number(position.y) || 0,
+          Number(position.z) || piece.position.z,
+        )
+        piece.rotation.z = Number(entry.rotationZ) || 0
+        piece.scale.x =
+          Number(entry.scaleX) || (entry.flipped ? -1 : piece.scale.x)
+        syncLabelOrientation(piece)
+
+        this.scene.add(piece)
+        this.pieces.push(piece)
+      }
+    }
+
+    this.nextSetId = Math.max(maxSetId + 1, 1)
+
+    if (layout.camera) {
+      this.camera.position.x = Number(layout.camera.x) || 0
+      this.camera.position.y = Number(layout.camera.y) || 1
+      this.camera.zoom = Number(layout.camera.zoom) || 1.4
+      this.camera.updateProjectionMatrix()
+      this.refreshVisibleGrid()
+    }
+
+    this.interaction?.clearSelection()
+    this.notifyPiecesChange()
+  }
+
   clearPieces() {
     for (const piece of this.pieces) {
       this.scene.remove(piece)
       disposeObject(piece)
     }
     this.pieces = []
+    this.interaction?.clearSelection()
+    this.notifyPiecesChange()
   }
 
   reset() {

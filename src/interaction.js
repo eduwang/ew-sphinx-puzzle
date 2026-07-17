@@ -21,12 +21,14 @@ export function setupPieceInteraction({
   initialSnapEnabled = true,
   initialPieceSnapEnabled = true,
   initialCollisionEnabled = true,
+  initialDeleteEnabled = false,
   onEmptyPointerDown = null,
   getIsCameraPanning = () => false,
   getIsPlacingPuzzle = () => false,
   getIsCapturingSet = () => false,
   onPlacePuzzleClick = null,
   onCaptureSetClick = null,
+  onDeletePiece = null,
 }) {
   const raycaster = new THREE.Raycaster()
   const pointer = new THREE.Vector2()
@@ -39,6 +41,7 @@ export function setupPieceInteraction({
   let snapEnabled = initialSnapEnabled
   let pieceSnapEnabled = initialPieceSnapEnabled
   let collisionEnabled = initialCollisionEnabled
+  let deleteEnabled = initialDeleteEnabled
   let lastValidX = 0
   let lastValidY = 0
 
@@ -224,6 +227,12 @@ export function setupPieceInteraction({
         snapPieceToGrid(selectedPiece)
       }
       event.preventDefault()
+    } else if (key === 'x' && deleteEnabled) {
+      const piece = selectedPiece
+      selectPiece(null)
+      dragPiece = null
+      onDeletePiece?.(piece)
+      event.preventDefault()
     }
   }
 
@@ -235,6 +244,12 @@ export function setupPieceInteraction({
 
   return {
     isDraggingPiece: () => Boolean(dragPiece),
+    clearSelection() {
+      if (dragPiece) {
+        dragPiece = null
+      }
+      selectPiece(null)
+    },
     setSnapEnabled(enabled) {
       snapEnabled = enabled
       if (enabled) {
@@ -248,6 +263,9 @@ export function setupPieceInteraction({
     },
     setCollisionEnabled(enabled) {
       collisionEnabled = enabled
+    },
+    setDeleteEnabled(enabled) {
+      deleteEnabled = enabled
     },
     dispose() {
       domElement.removeEventListener('pointerdown', onPointerDown)

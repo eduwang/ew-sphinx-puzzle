@@ -465,7 +465,7 @@ export function setPieceNumbersVisible(pieces, visible) {
 }
 
 /** 숫자는 월드 기준으로 항상 똑바로, 뒤집혀 보이지 않게 보정 */
-function syncLabelOrientation(piece) {
+export function syncLabelOrientation(piece) {
   const label = piece.userData.label
   if (!label) return
 

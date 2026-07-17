@@ -30,6 +30,7 @@ export function setupGui({
   onCollisionChange,
   onReset,
   onAddPuzzle,
+  showDeleteHint = false,
   initialGridVisible = true,
   initialNumbersVisible = true,
   initialSnapEnabled = true,
@@ -81,6 +82,7 @@ export function setupGui({
     move: '클릭 후 드래그',
     rotate: '클릭 후 R',
     flip: '클릭 후 F',
+    delete: '클릭 후 X',
     pan: '빈 곳/중·우클릭 드래그',
     zoom: '마우스 휠',
   }
@@ -88,6 +90,9 @@ export function setupGui({
   controlsGui.add(controls, 'move').name('도형 이동').disable()
   controlsGui.add(controls, 'rotate').name('시계 방향 30° 회전').disable()
   controlsGui.add(controls, 'flip').name('뒤집기').disable()
+  if (showDeleteHint) {
+    controlsGui.add(controls, 'delete').name('도형 삭제').disable()
+  }
   controlsGui.add(controls, 'pan').name('카메라 이동').disable()
   controlsGui.add(controls, 'zoom').name('카메라 확대/축소').disable()
 
