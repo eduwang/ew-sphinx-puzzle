@@ -1,4 +1,4 @@
-const INFO_STORAGE_KEY = 'sphinx-puzzle-info-dismissed'
+const INFO_STORAGE_KEY = 'sphinx-puzzle-info-dismissed-v2'
 
 function createInfoButton() {
   const button = document.createElement('button')
@@ -44,14 +44,18 @@ function createInfoPanel() {
           <li><strong>카메라</strong> — 휠로 확대/축소, 빈 곳 드래그로 이동</li>
         </ul>
         <p>
-          격자 스냅과 겹침 방지를 켜 두면
-          도형을 더 정확하게 맞춰 볼 수 있습니다.
+          설정에서 <strong>격자 스냅</strong>을 켜면 도형 기준점이
+          삼각형 격자의 교점·중점에 붙고,
+          <strong>도형 스냅</strong>을 켜면 다른 조각의
+          꼭짓점·변 중점에 맞춰집니다.
+          겹침 방지도 함께 쓸 수 있어요.
+        </p>
+        <p>
           새 퍼즐을 추가하거나, 카메라 버튼으로
-          만든 모양을 이미지로 저장할 수도 있어요.
+          만든 모양을 이미지로 저장할 수도 있습니다.
         </p>
         <p class="info-panel__tip">
-          도형을 자유롭게 돌려 보면서,
-          같은 넓이로 다른 모양이 되는지 탐구해 보세요!
+          도형을 자유롭게 돌려 보면서 탐구해 보세요!
         </p>
       </div>
     </div>
@@ -83,15 +87,15 @@ export function setupInfoPanel() {
     }
   }
 
-  const markInfoSeen = () => {
+  const markInfoDismissed = () => {
     try {
       sessionStorage.setItem(INFO_STORAGE_KEY, '1')
     } catch {
-      // storage unavailable (private mode 등)
+      // storage unavailable
     }
   }
 
-  const hasSeenInfo = () => {
+  const isInfoDismissed = () => {
     try {
       return sessionStorage.getItem(INFO_STORAGE_KEY) === '1'
     } catch {
@@ -99,8 +103,15 @@ export function setupInfoPanel() {
     }
   }
 
-  const setOpen = (nextOpen, { markSeen = false } = {}) => {
-    if (animating || open === nextOpen) return
+  const setOpen = (nextOpen, { force = false } = {}) => {
+    if (!force && (animating || open === nextOpen)) return
+    if (force && open === nextOpen) return
+
+    if (animationTimer) {
+      clearTimeout(animationTimer)
+      animationTimer = null
+    }
+
     open = nextOpen
     animating = true
 
@@ -110,7 +121,6 @@ export function setupInfoPanel() {
     if (open) {
       panel.classList.remove('is-closing')
       panel.classList.add('is-open')
-      // 다음 프레임에 is-visible을 켜서 scale 애니메이션 시작
       requestAnimationFrame(() => {
         requestAnimationFrame(() => {
           panel.classList.add('is-visible')
@@ -119,9 +129,7 @@ export function setupInfoPanel() {
     } else {
       panel.classList.remove('is-visible')
       panel.classList.add('is-closing')
-      if (markSeen) {
-        markInfoSeen()
-      }
+      markInfoDismissed()
     }
 
     animationTimer = setTimeout(finishAnimation, 420)
@@ -137,21 +145,12 @@ export function setupInfoPanel() {
   })
 
   closeButton.addEventListener('click', () => {
-    setOpen(false, { markSeen: true })
+    setOpen(false)
   })
 
-  // 첫 진입(이번 세션) 시 설명 표시 — 닫을 때까지 seen 처리하지 않음
-  const openOnFirstVisit = () => {
-    if (hasSeenInfo()) return
-    setOpen(true)
-  }
-
-  if (document.readyState === 'complete') {
-    setTimeout(openOnFirstVisit, 120)
-  } else {
-    window.addEventListener('load', () => setTimeout(openOnFirstVisit, 120), {
-      once: true,
-    })
+  // 이번 탭에서 아직 닫지 않았다면, 진입 직후 자동으로 연다
+  if (!isInfoDismissed()) {
+    setTimeout(() => setOpen(true, { force: true }), 200)
   }
 
   return { button, panel, open: () => setOpen(true), close: () => setOpen(false) }
