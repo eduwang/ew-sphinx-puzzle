@@ -29,6 +29,7 @@ export function setupPieceInteraction({
   onPlacePuzzleClick = null,
   onCaptureSetClick = null,
   onDeletePiece = null,
+  onSelectionChange = null,
 }) {
   const raycaster = new THREE.Raycaster()
   const pointer = new THREE.Vector2()
@@ -126,6 +127,31 @@ export function setupPieceInteraction({
       setPieceSelected(p, p === piece)
     }
     selectedPiece = piece
+    onSelectionChange?.(piece)
+  }
+
+  const rotateSelected = () => {
+    if (!selectedPiece) return false
+    rotatePiece(selectedPiece)
+    return true
+  }
+
+  const flipSelected = () => {
+    if (!selectedPiece) return false
+    flipPiece(selectedPiece)
+    if (snapEnabled) {
+      snapPieceToGrid(selectedPiece)
+    }
+    return true
+  }
+
+  const deleteSelected = () => {
+    if (!deleteEnabled || !selectedPiece) return false
+    const piece = selectedPiece
+    selectPiece(null)
+    dragPiece = null
+    onDeletePiece?.(piece)
+    return true
   }
 
   const onPointerDown = (event) => {
@@ -217,22 +243,15 @@ export function setupPieceInteraction({
 
     const key = event.key.toLowerCase()
     if (key === 'r') {
-      // 회전은 충돌 검사 없이 허용
-      rotatePiece(selectedPiece)
+      rotateSelected()
       event.preventDefault()
     } else if (key === 'f') {
-      // 뒤집기도 충돌 검사 없이 허용
-      flipPiece(selectedPiece)
-      if (snapEnabled) {
-        snapPieceToGrid(selectedPiece)
+      flipSelected()
+      event.preventDefault()
+    } else if (key === 'x') {
+      if (deleteSelected()) {
+        event.preventDefault()
       }
-      event.preventDefault()
-    } else if (key === 'x' && deleteEnabled) {
-      const piece = selectedPiece
-      selectPiece(null)
-      dragPiece = null
-      onDeletePiece?.(piece)
-      event.preventDefault()
     }
   }
 
@@ -244,6 +263,10 @@ export function setupPieceInteraction({
 
   return {
     isDraggingPiece: () => Boolean(dragPiece),
+    getSelectedPiece: () => selectedPiece,
+    rotateSelected,
+    flipSelected,
+    deleteSelected,
     clearSelection() {
       if (dragPiece) {
         dragPiece = null

@@ -7,6 +7,7 @@ import {
 import { createPuzzleSet } from './puzzleSet.js'
 import { setupPieceInteraction } from './interaction.js'
 import { setupCameraControls } from './cameraControls.js'
+import { setupMobileActionBar } from './mobileActionBar.js'
 
 const TRIANGLE_SIZE = 1
 const BACKGROUND_COLOR = 0xf4f1ea
@@ -85,9 +86,19 @@ export class PuzzleScene {
       onPlacePuzzleClick: (point) => this.finishPlacePuzzle(point),
       onCaptureSetClick: (piece) => this.finishCaptureSet(piece),
       onDeletePiece: (piece) => this.removePieceObject(piece),
+      onSelectionChange: (piece) => {
+        this.mobileActionBar?.setSelected(piece)
+      },
       onEmptyPointerDown: (event) => {
         this.cameraControls.startPanFromEmptySpace(event)
       },
+    })
+
+    this.mobileActionBar = setupMobileActionBar({
+      enableDelete,
+      onRotate: () => this.interaction.rotateSelected(),
+      onFlip: () => this.interaction.flipSelected(),
+      onDelete: () => this.interaction.deleteSelected(),
     })
 
     this.handleResize()
