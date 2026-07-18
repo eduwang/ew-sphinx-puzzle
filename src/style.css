@@ -407,7 +407,7 @@ canvas {
     top: 148px !important;
   }
 
-  .mobile-action-bar {
+  .mobile-action-bar.is-visible {
     display: flex;
   }
 
@@ -438,7 +438,7 @@ canvas {
   position: fixed;
   left: 50%;
   bottom: 16px;
-  z-index: 1180;
+  z-index: 1260;
   transform: translateX(-50%) translateY(12px);
   align-items: stretch;
   gap: 8px;
