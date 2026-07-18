@@ -391,14 +391,7 @@ canvas {
     width: min(360px, calc(100vw - 24px));
   }
 
-  body.is-dev-mode .dev-mode-panel {
-    left: 12px;
-    right: auto;
-    bottom: 130px;
-    width: min(280px, calc(100vw - 24px));
-    max-height: calc(100vh - 190px);
-  }
-
+  body.is-dev-mode .dev-tools-button,
   body.is-teacher-mode .teacher-tools-button {
     width: 44px;
     height: 44px;
@@ -406,10 +399,12 @@ canvas {
     bottom: 124px;
   }
 
+  body.is-dev-mode .info-panel,
   body.is-teacher-mode .info-panel {
     bottom: 180px;
   }
 
+  body.is-dev-mode .dev-mode-panel,
   body.is-teacher-mode .teacher-mode-panel {
     right: 12px;
     bottom: 180px;
@@ -440,10 +435,13 @@ canvas {
     bottom: 200px;
   }
 
+  body.is-dev-mode.mobile-action-bar-open .dev-tools-button,
   body.is-teacher-mode.mobile-action-bar-open .teacher-tools-button {
     bottom: 200px;
   }
 
+  body.is-dev-mode.mobile-action-bar-open .info-panel,
+  body.is-dev-mode.mobile-action-bar-open .dev-mode-panel,
   body.is-teacher-mode.mobile-action-bar-open .info-panel,
   body.is-teacher-mode.mobile-action-bar-open .teacher-mode-panel {
     bottom: 256px;
@@ -451,10 +449,6 @@ canvas {
 
   body.mobile-action-bar-open .actions-panel {
     bottom: 88px !important;
-  }
-
-  body.is-dev-mode.mobile-action-bar-open .dev-mode-panel {
-    bottom: 200px;
   }
 }
 
@@ -552,28 +546,80 @@ body.is-dev-mode .controls-panel {
   top: 46px !important;
 }
 
-.dev-mode-panel {
-  display: none;
-  position: fixed;
-  left: 10px;
-  bottom: 70px;
-  top: auto;
-  right: auto;
-  z-index: 1250;
-  width: 300px;
-  max-height: calc(100vh - 160px);
-  overflow: auto;
-  padding: 12px;
-  border: 1px solid rgba(138, 59, 18, 0.18);
-  border-radius: 14px;
-  background: rgba(255, 250, 245, 0.96);
-  box-shadow: 0 10px 28px rgba(138, 59, 18, 0.16);
-  font-family: "Pretendard", "Noto Sans KR", sans-serif;
-  color: #4a2f1c;
+body.is-dev-mode .info-panel {
+  bottom: 196px;
 }
 
-body.is-dev-mode .dev-mode-panel {
-  display: block;
+.dev-tools-button {
+  display: none;
+  position: fixed;
+  right: 16px;
+  bottom: 136px;
+  z-index: 1100;
+  width: 48px;
+  height: 48px;
+  border: none;
+  border-radius: 999px;
+  place-items: center;
+  color: #6b4226;
+  background: rgba(255, 250, 245, 0.96);
+  box-shadow: 0 6px 18px rgba(138, 59, 18, 0.18);
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.15s ease, color 0.15s ease;
+}
+
+body.is-dev-mode .dev-tools-button {
+  display: grid;
+}
+
+.dev-tools-button:hover {
+  background: #ffffff;
+  transform: translateY(-1px);
+}
+
+.dev-tools-button.is-active {
+  color: #fff8e8;
+  background: #c45c26;
+}
+
+.dev-mode-panel {
+  position: fixed;
+  right: 16px;
+  bottom: 196px;
+  z-index: 1150;
+  width: min(300px, calc(100vw - 32px));
+  transform-origin: bottom right;
+  transform: scale(0.08) translate(18px, 42px);
+  opacity: 0;
+  pointer-events: none;
+  visibility: hidden;
+  font-family: "Pretendard", "Noto Sans KR", sans-serif;
+  color: #4a2f1c;
+  transition:
+    transform 0.38s cubic-bezier(0.2, 0.8, 0.2, 1),
+    opacity 0.28s ease;
+}
+
+.dev-mode-panel.is-open {
+  visibility: visible;
+}
+
+.dev-mode-panel.is-visible {
+  transform: scale(1) translate(0, 0);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.dev-mode-panel.is-closing {
+  pointer-events: none;
+}
+
+.dev-mode-panel__card {
+  padding: 12px;
+  border: 1px solid rgba(138, 59, 18, 0.18);
+  border-radius: 16px;
+  background: rgba(255, 250, 245, 0.96);
+  box-shadow: 0 14px 36px rgba(138, 59, 18, 0.16);
 }
 
 .dev-mode-panel__header {
@@ -590,14 +636,20 @@ body.is-dev-mode .dev-mode-panel {
   font-weight: 700;
 }
 
-.dev-mode-panel__refresh {
-  border: 1px solid rgba(138, 59, 18, 0.2);
+.dev-mode-panel__close {
+  width: 28px;
+  height: 28px;
+  border: none;
   border-radius: 8px;
-  padding: 4px 8px;
-  background: rgba(255, 255, 255, 0.8);
+  background: transparent;
   color: #6b4226;
-  font-size: 12px;
+  font-size: 20px;
+  line-height: 1;
   cursor: pointer;
+}
+
+.dev-mode-panel__close:hover {
+  background: rgba(138, 59, 18, 0.08);
 }
 
 .dev-mode-panel__hint {
