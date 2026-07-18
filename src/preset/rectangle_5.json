@@ -1,0 +1,242 @@
+{
+  "version": 1,
+  "format": "ew-sphinx-puzzle-layout",
+  "exportedAt": "2026-07-17T14:41:14.650Z",
+  "triangleSize": 1,
+  "gridRotationZ": 0.5235987755982988,
+  "camera": {
+    "x": -1.2663670119210477,
+    "y": 0.5387922610904826,
+    "zoom": 1.4
+  },
+  "pieces": [
+    {
+      "setId": 1,
+      "pieceNumber": 3,
+      "position": {
+        "x": -3.0980762113533156,
+        "y": 1.6339745962155614,
+        "z": 0.06
+      },
+      "rotationZ": -1.5707963267948966,
+      "scaleX": 1,
+      "flipped": false
+    },
+    {
+      "setId": 2,
+      "pieceNumber": 3,
+      "position": {
+        "x": 3.3306690738754696e-16,
+        "y": 2,
+        "z": 0.06
+      },
+      "rotationZ": 0,
+      "scaleX": 1,
+      "flipped": false
+    },
+    {
+      "setId": 2,
+      "pieceNumber": 5,
+      "position": {
+        "x": -0.28867513459481275,
+        "y": 0.8333333333333334,
+        "z": 0.06
+      },
+      "rotationZ": 0,
+      "scaleX": 1,
+      "flipped": false
+    },
+    {
+      "setId": 2,
+      "pieceNumber": 6,
+      "position": {
+        "x": 0.288675134594813,
+        "y": 1.1666666666666665,
+        "z": 0.06
+      },
+      "rotationZ": 3.141592653589793,
+      "scaleX": 1,
+      "flipped": false
+    },
+    {
+      "setId": 3,
+      "pieceNumber": 1,
+      "position": {
+        "x": 2.630768281804422,
+        "y": 1.401923788646683,
+        "z": 0.06
+      },
+      "rotationZ": -1.5707963267948966,
+      "scaleX": 1,
+      "flipped": false
+    },
+    {
+      "setId": 3,
+      "pieceNumber": 5,
+      "position": {
+        "x": 2.7974349484710883,
+        "y": 3.422649730810374,
+        "z": 0.06
+      },
+      "rotationZ": -1.5707963267948966,
+      "scaleX": 1,
+      "flipped": false
+    },
+    {
+      "setId": 3,
+      "pieceNumber": 6,
+      "position": {
+        "x": 3.1307682818044222,
+        "y": 1.1132486540518705,
+        "z": 0.06
+      },
+      "rotationZ": 1.570796326794897,
+      "scaleX": 1,
+      "flipped": false
+    },
+    {
+      "setId": 3,
+      "pieceNumber": 7,
+      "position": {
+        "x": 3.0891016151377553,
+        "y": 2.4844555433772317,
+        "z": 0.06
+      },
+      "rotationZ": -1.5707963267948966,
+      "scaleX": 1,
+      "flipped": false
+    },
+    {
+      "setId": 4,
+      "pieceNumber": 1,
+      "position": {
+        "x": -3.0310889132455356,
+        "y": -3.083333333333333,
+        "z": 0.06
+      },
+      "rotationZ": 0,
+      "scaleX": 1,
+      "flipped": false
+    },
+    {
+      "setId": 4,
+      "pieceNumber": 2,
+      "position": {
+        "x": -3.608439182435161,
+        "y": -2.7499999999999996,
+        "z": 0.06
+      },
+      "rotationZ": -1.5707963267948966,
+      "scaleX": 1,
+      "flipped": false
+    },
+    {
+      "setId": 4,
+      "pieceNumber": 3,
+      "position": {
+        "x": -4.763139720814412,
+        "y": -2.7499999999999996,
+        "z": 0.06
+      },
+      "rotationZ": 0,
+      "scaleX": 1,
+      "flipped": false
+    },
+    {
+      "setId": 4,
+      "pieceNumber": 4,
+      "position": {
+        "x": -2.814582562299426,
+        "y": -2.3749999999999996,
+        "z": 0.06
+      },
+      "rotationZ": -3.665191429188092,
+      "scaleX": 1,
+      "flipped": false
+    },
+    {
+      "setId": 4,
+      "pieceNumber": 5,
+      "position": {
+        "x": -5.0518148554092255,
+        "y": -1.9166666666666663,
+        "z": 0.06
+      },
+      "rotationZ": 0,
+      "scaleX": 1,
+      "flipped": false
+    },
+    {
+      "setId": 4,
+      "pieceNumber": 6,
+      "position": {
+        "x": -2.7424137786507226,
+        "y": -1.5833333333333328,
+        "z": 0.06
+      },
+      "rotationZ": 3.141592653589793,
+      "scaleX": 1,
+      "flipped": false
+    },
+    {
+      "setId": 4,
+      "pieceNumber": 7,
+      "position": {
+        "x": -4.113620667976083,
+        "y": -1.6249999999999996,
+        "z": 0.06
+      },
+      "rotationZ": 0,
+      "scaleX": 1,
+      "flipped": false
+    },
+    {
+      "setId": 5,
+      "pieceNumber": 1,
+      "position": {
+        "x": 1.5996793685588853,
+        "y": -0.883974596215561,
+        "z": 0.06
+      },
+      "rotationZ": -1.5707963267948966,
+      "scaleX": 1,
+      "flipped": false
+    },
+    {
+      "setId": 5,
+      "pieceNumber": 5,
+      "position": {
+        "x": 0.5996793685588855,
+        "y": -0.8839745962155612,
+        "z": 0.06
+      },
+      "rotationZ": -2.617993877991494,
+      "scaleX": -1,
+      "flipped": true
+    },
+    {
+      "setId": 5,
+      "pieceNumber": 6,
+      "position": {
+        "x": 1.7663460352255522,
+        "y": -1.75,
+        "z": 0.06
+      },
+      "rotationZ": -5.759586531581288,
+      "scaleX": -1,
+      "flipped": true
+    },
+    {
+      "setId": 5,
+      "pieceNumber": 7,
+      "position": {
+        "x": 1.0580127018922185,
+        "y": -1.53349364905389,
+        "z": 0.06
+      },
+      "rotationZ": -1.5707963267948966,
+      "scaleX": 1,
+      "flipped": false
+    }
+  ]
+}

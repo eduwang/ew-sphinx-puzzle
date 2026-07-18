@@ -76,7 +76,7 @@ export class PuzzleScene {
       getPieces: () => this.pieces,
       triangleSize: TRIANGLE_SIZE,
       gridRotationZ: GRID_ROTATION_Z,
-      initialSnapEnabled: true,
+      initialSnapEnabled: false,
       initialPieceSnapEnabled: true,
       initialCollisionEnabled: true,
       initialDeleteEnabled: enableDelete,

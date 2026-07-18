@@ -2,9 +2,9 @@ import { PuzzleScene } from './scene.js'
 import { setupGui } from './gui.js'
 import { setupCaptureUi } from './captureUi.js'
 import { setupInfoPanel } from './infoPanel.js'
-import { setupDevModeUi } from './devModeUi.js'
+import { setupTeacherModeUi } from './teacherModeUi.js'
 
-const puzzleScene = new PuzzleScene({ enableDelete: true })
+const puzzleScene = new PuzzleScene()
 
 setupGui({
   initialGridVisible: true,
@@ -12,7 +12,6 @@ setupGui({
   initialSnapEnabled: false,
   initialPieceSnapEnabled: true,
   initialCollisionEnabled: true,
-  showDeleteHint: true,
   onGridVisibilityChange: (visible) => {
     puzzleScene.setGridVisible(visible)
   },
@@ -38,4 +37,4 @@ setupGui({
 
 setupCaptureUi(puzzleScene)
 setupInfoPanel()
-setupDevModeUi(puzzleScene)
+setupTeacherModeUi(puzzleScene)

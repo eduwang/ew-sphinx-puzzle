@@ -33,7 +33,7 @@ export function setupGui({
   showDeleteHint = false,
   initialGridVisible = true,
   initialNumbersVisible = true,
-  initialSnapEnabled = true,
+  initialSnapEnabled = false,
   initialPieceSnapEnabled = true,
   initialCollisionEnabled = true,
 }) {

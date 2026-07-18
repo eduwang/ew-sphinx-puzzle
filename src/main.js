@@ -8,7 +8,7 @@ const puzzleScene = new PuzzleScene()
 setupGui({
   initialGridVisible: true,
   initialNumbersVisible: true,
-  initialSnapEnabled: true,
+  initialSnapEnabled: false,
   initialPieceSnapEnabled: true,
   initialCollisionEnabled: true,
   onGridVisibilityChange: (visible) => {

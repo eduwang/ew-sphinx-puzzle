@@ -18,7 +18,7 @@ export function setupPieceInteraction({
   getPieces,
   triangleSize = 1,
   gridRotationZ = Math.PI / 6,
-  initialSnapEnabled = true,
+  initialSnapEnabled = false,
   initialPieceSnapEnabled = true,
   initialCollisionEnabled = true,
   initialDeleteEnabled = false,

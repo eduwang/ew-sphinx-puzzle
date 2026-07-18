@@ -13,6 +13,7 @@ export default defineConfig({
       input: {
         main: resolvePath('./index.html'),
         devMode: resolvePath('./dev-mode.html'),
+        teacherMode: resolvePath('./teacher-mode.html'),
       },
     },
   },
