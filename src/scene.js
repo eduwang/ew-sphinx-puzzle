@@ -8,6 +8,7 @@ import { createPuzzleSet } from './puzzleSet.js'
 import { setupPieceInteraction } from './interaction.js'
 import { setupCameraControls } from './cameraControls.js'
 import { setupMobileActionBar } from './mobileActionBar.js'
+import { setupMobileTouchGuards } from './mobileTouch.js'
 
 const TRIANGLE_SIZE = 1
 const BACKGROUND_COLOR = 0xf4f1ea
@@ -44,6 +45,7 @@ export class PuzzleScene {
     this.renderer = new THREE.WebGLRenderer({ antialias: true })
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
     document.body.appendChild(this.renderer.domElement)
+    setupMobileTouchGuards(this.renderer.domElement)
 
     this.grid = null
     this.pieces = []

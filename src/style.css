@@ -11,12 +11,43 @@ body {
   margin: 0;
   overflow: hidden;
   background: #f4f1ea;
+  overscroll-behavior: none;
+  -webkit-text-size-adjust: 100%;
+  touch-action: manipulation;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
 }
 
 canvas {
   display: block;
   width: 100%;
   height: 100%;
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
+button,
+.lil-gui,
+.lil-gui input,
+.lil-gui select,
+.lil-gui textarea,
+.info-panel,
+.dev-mode-panel,
+.teacher-mode-panel {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.info-panel,
+.dev-mode-panel,
+.teacher-mode-panel,
+.lil-gui input,
+.lil-gui textarea {
+  -webkit-user-select: text;
+  user-select: text;
 }
 
 .settings-panel {
