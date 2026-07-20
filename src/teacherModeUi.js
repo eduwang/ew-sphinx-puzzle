@@ -3,6 +3,8 @@ import { readLayoutJsonFile } from './layoutExport.js'
 import triangle13Preset from './preset/triangle_13.json'
 import rectangle5Preset from './preset/rectangle_5.json'
 import allPossible27Preset from './preset/all_possible_27.json'
+import unitAreaImage from './assets/unit_area.png'
+import { buildCandidates30Layout } from './preset/candidates30.js'
 
 function createToolsButton() {
   const button = document.createElement('button')
@@ -48,6 +50,9 @@ function createPanel() {
       <button type="button" class="teacher-mode-panel__preset teacher-mode-panel__preset--full" data-preset="convex">
         볼록한 다각형
       </button>
+      <button type="button" class="teacher-mode-panel__preset teacher-mode-panel__preset--full" data-action="show-unit-area">
+        볼록한 다각형 후보군 보기
+      </button>
       <button type="button" class="teacher-mode-panel__upload">
         배치 JSON 업로드
       </button>
@@ -61,6 +66,32 @@ function createPanel() {
   `
   document.body.appendChild(panel)
   return panel
+}
+
+function createUnitAreaViewer() {
+  const viewer = document.createElement('div')
+  viewer.className = 'unit-area-viewer'
+  viewer.setAttribute('role', 'dialog')
+  viewer.setAttribute('aria-modal', 'true')
+  viewer.setAttribute('aria-labelledby', 'unit-area-viewer-title')
+  viewer.innerHTML = `
+    <div class="unit-area-viewer__backdrop" data-close="true"></div>
+    <div class="unit-area-viewer__dialog">
+      <header class="unit-area-viewer__header">
+        <h2 id="unit-area-viewer-title">볼록한 다각형 후보군</h2>
+        <button type="button" class="unit-area-viewer__close" aria-label="닫기" data-close="true">×</button>
+      </header>
+      <div class="unit-area-viewer__body">
+        <img
+          class="unit-area-viewer__image"
+          src="${unitAreaImage}"
+          alt="볼록한 다각형 후보군 도해"
+        />
+      </div>
+    </div>
+  `
+  document.body.appendChild(viewer)
+  return viewer
 }
 
 async function loadLayout(puzzleScene, layout, successText) {
@@ -92,6 +123,7 @@ export function setupTeacherModeUi(puzzleScene) {
 
   const button = createToolsButton()
   const panel = createPanel()
+  const viewer = createUnitAreaViewer()
   const closeButton = panel.querySelector('.teacher-mode-panel__close')
   const uploadButton = panel.querySelector('.teacher-mode-panel__upload')
   const fileInput = panel.querySelector('.teacher-mode-panel__file')
@@ -142,6 +174,11 @@ export function setupTeacherModeUi(puzzleScene) {
     animationTimer = setTimeout(finishAnimation, 420)
   }
 
+  const setViewerOpen = (nextOpen) => {
+    viewer.classList.toggle('is-open', nextOpen)
+    document.body.classList.toggle('unit-area-viewer-open', nextOpen)
+  }
+
   panel.addEventListener('transitionend', (event) => {
     if (event.target !== panel || event.propertyName !== 'transform') return
     finishAnimation()
@@ -156,6 +193,20 @@ export function setupTeacherModeUi(puzzleScene) {
   })
 
   panel.addEventListener('click', async (event) => {
+    const actionButton = event.target.closest('[data-action]')
+    if (actionButton?.dataset.action === 'show-unit-area') {
+      setViewerOpen(true)
+      return
+    }
+    if (actionButton?.dataset.action === 'show-candidates-30') {
+      await loadLayout(
+        puzzleScene,
+        buildCandidates30Layout(),
+        '볼록한 다각형 후보군 30개를 격자에 불러왔습니다.',
+      )
+      return
+    }
+
     const presetButton = event.target.closest('[data-preset]')
     if (!presetButton) return
 
@@ -178,6 +229,18 @@ export function setupTeacherModeUi(puzzleScene) {
         allPossible27Preset,
         '볼록한 다각형 예시 배치를 불러왔습니다.',
       )
+    }
+  })
+
+  viewer.addEventListener('click', (event) => {
+    if (event.target.closest('[data-close="true"]')) {
+      setViewerOpen(false)
+    }
+  })
+
+  window.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && viewer.classList.contains('is-open')) {
+      setViewerOpen(false)
     }
   })
 

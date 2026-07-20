@@ -9,6 +9,7 @@ import { setupPieceInteraction } from './interaction.js'
 import { setupCameraControls } from './cameraControls.js'
 import { setupMobileActionBar } from './mobileActionBar.js'
 import { setupMobileTouchGuards } from './mobileTouch.js'
+import { createPieceFromEntry } from './preset/candidates30.js'
 
 const TRIANGLE_SIZE = 1
 const BACKGROUND_COLOR = 0xf4f1ea
@@ -219,6 +220,12 @@ export class PuzzleScene {
       throw new Error('올바른 퍼즐 배치 JSON이 아닙니다.')
     }
 
+    // 1·2번만 여러 개 쓰는 후보군 레이아웃
+    if (layout.pieceOnly) {
+      this.importPieceOnlyLayout(layout)
+      return
+    }
+
     this.clearPieces()
 
     const entriesBySet = new Map()
@@ -269,6 +276,36 @@ export class PuzzleScene {
         this.scene.add(piece)
         this.pieces.push(piece)
       }
+    }
+
+    this.nextSetId = Math.max(maxSetId + 1, 1)
+
+    if (layout.camera) {
+      this.camera.position.x = Number(layout.camera.x) || 0
+      this.camera.position.y = Number(layout.camera.y) || 1
+      this.camera.zoom = Number(layout.camera.zoom) || 1.4
+      this.camera.updateProjectionMatrix()
+      this.refreshVisibleGrid()
+    }
+
+    this.interaction?.clearSelection()
+    this.notifyPiecesChange()
+  }
+
+  importPieceOnlyLayout(layout) {
+    this.clearPieces()
+
+    let maxSetId = 0
+    for (const entry of layout.pieces) {
+      const pieceNumber = Number(entry.pieceNumber)
+      if (pieceNumber !== 1 && pieceNumber !== 2) continue
+
+      const piece = createPieceFromEntry(entry, {
+        showNumber: this.showNumbers,
+      })
+      maxSetId = Math.max(maxSetId, Number(entry.setId) || 0)
+      this.scene.add(piece)
+      this.pieces.push(piece)
     }
 
     this.nextSetId = Math.max(maxSetId + 1, 1)

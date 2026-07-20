@@ -879,3 +879,89 @@ body.is-teacher-mode .teacher-tools-button {
 .teacher-mode-panel__upload:hover {
   background: #18305e;
 }
+
+/* 볼록한 다각형 후보군 이미지 뷰어 */
+.unit-area-viewer {
+  position: fixed;
+  inset: 0;
+  z-index: 1400;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  opacity: 0;
+  pointer-events: none;
+  visibility: hidden;
+  transition: opacity 0.2s ease;
+}
+
+.unit-area-viewer.is-open {
+  opacity: 1;
+  pointer-events: auto;
+  visibility: visible;
+}
+
+.unit-area-viewer__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(20, 28, 45, 0.55);
+}
+
+.unit-area-viewer__dialog {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  width: min(960px, calc(100vw - 32px));
+  max-height: calc(100vh - 48px);
+  overflow: hidden;
+  border-radius: 16px;
+  background: rgba(255, 252, 247, 0.98);
+  box-shadow: 0 18px 48px rgba(20, 28, 45, 0.28);
+}
+
+.unit-area-viewer__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 16px;
+  border-bottom: 1px solid rgba(31, 59, 115, 0.1);
+}
+
+.unit-area-viewer__header h2 {
+  margin: 0;
+  font-family: "Pretendard", "Noto Sans KR", sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: #1f3b73;
+}
+
+.unit-area-viewer__close {
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: #1f3b73;
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.unit-area-viewer__close:hover {
+  background: rgba(31, 59, 115, 0.08);
+}
+
+.unit-area-viewer__body {
+  overflow: auto;
+  padding: 12px;
+  background: #eef1f5;
+}
+
+.unit-area-viewer__image {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+  background: #fff;
+}
