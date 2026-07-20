@@ -6,9 +6,13 @@ function createActionBar({ enableDelete }) {
   bar.setAttribute('role', 'toolbar')
   bar.setAttribute('aria-label', '도형 조작')
   bar.innerHTML = `
-    <button type="button" class="mobile-action-bar__btn" data-action="rotate">
+    <button type="button" class="mobile-action-bar__btn" data-action="rotate-ccw">
+      <span class="mobile-action-bar__icon" aria-hidden="true">↺</span>
+      <span>반시계</span>
+    </button>
+    <button type="button" class="mobile-action-bar__btn" data-action="rotate-cw">
       <span class="mobile-action-bar__icon" aria-hidden="true">↻</span>
-      <span>회전</span>
+      <span>시계</span>
     </button>
     <button type="button" class="mobile-action-bar__btn" data-action="flip">
       <span class="mobile-action-bar__icon" aria-hidden="true">⇄</span>
@@ -28,11 +32,12 @@ function createActionBar({ enableDelete }) {
 }
 
 /**
- * 모바일에서 도형 선택 시 하단 액션 바(회전/뒤집기[/삭제])를 표시합니다.
+ * 모바일에서 도형 선택 시 하단 액션 바(반시계/시계/뒤집기[/삭제])를 표시합니다.
  */
 export function setupMobileActionBar({
   enableDelete = false,
-  onRotate,
+  onRotateClockwise,
+  onRotateCounterClockwise,
   onFlip,
   onDelete,
 }) {
@@ -61,7 +66,8 @@ export function setupMobileActionBar({
     if (!button) return
 
     const action = button.dataset.action
-    if (action === 'rotate') onRotate?.()
+    if (action === 'rotate-cw') onRotateClockwise?.()
+    if (action === 'rotate-ccw') onRotateCounterClockwise?.()
     if (action === 'flip') onFlip?.()
     if (action === 'delete') onDelete?.()
   })

@@ -39,8 +39,9 @@ function createInfoPanel() {
         </p>
         <ul>
           <li><strong>이동</strong> — 도형을 드래그해서 옮기기</li>
-          <li><strong>회전</strong> — 도형을 고른 뒤 <kbd>R</kbd> (시계 방향 30°)</li>
-          <li><strong>뒤집기</strong> — 도형을 고른 뒤 <kbd>F</kbd></li>
+          <li><strong>반시계 회전</strong> — 도형을 고른 뒤 <kbd>Q</kbd> (30°)</li>
+          <li><strong>시계 회전</strong> — 도형을 고른 뒤 <kbd>W</kbd> (30°)</li>
+          <li><strong>뒤집기</strong> — 도형을 고른 뒤 <kbd>E</kbd></li>
           <li><strong>카메라</strong> — 휠로 확대/축소, 빈 곳 드래그로 이동</li>
         </ul>
         <p>

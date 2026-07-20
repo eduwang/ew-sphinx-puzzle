@@ -2,6 +2,7 @@ import Swal from 'sweetalert2'
 import { readLayoutJsonFile } from './layoutExport.js'
 import triangle13Preset from './preset/triangle_13.json'
 import rectangle5Preset from './preset/rectangle_5.json'
+import allPossible27Preset from './preset/all_possible_27.json'
 
 function createToolsButton() {
   const button = document.createElement('button')
@@ -44,6 +45,9 @@ function createPanel() {
           직사각형
         </button>
       </div>
+      <button type="button" class="teacher-mode-panel__preset teacher-mode-panel__preset--full" data-preset="convex">
+        볼록한 다각형
+      </button>
       <button type="button" class="teacher-mode-panel__upload">
         배치 JSON 업로드
       </button>
@@ -167,6 +171,12 @@ export function setupTeacherModeUi(puzzleScene) {
         puzzleScene,
         rectangle5Preset,
         '직사각형 예시 배치를 불러왔습니다.',
+      )
+    } else if (preset === 'convex') {
+      await loadLayout(
+        puzzleScene,
+        allPossible27Preset,
+        '볼록한 다각형 예시 배치를 불러왔습니다.',
       )
     }
   })

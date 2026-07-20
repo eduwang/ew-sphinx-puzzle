@@ -130,9 +130,9 @@ export function setupPieceInteraction({
     onSelectionChange?.(piece)
   }
 
-  const rotateSelected = () => {
+  const rotateSelected = ({ clockwise = true } = {}) => {
     if (!selectedPiece) return false
-    rotatePiece(selectedPiece)
+    rotatePiece(selectedPiece, { clockwise })
     return true
   }
 
@@ -242,10 +242,13 @@ export function setupPieceInteraction({
     if (!selectedPiece || event.repeat) return
 
     const key = event.key.toLowerCase()
-    if (key === 'r') {
-      rotateSelected()
+    if (key === 'w') {
+      rotateSelected({ clockwise: true })
       event.preventDefault()
-    } else if (key === 'f') {
+    } else if (key === 'q') {
+      rotateSelected({ clockwise: false })
+      event.preventDefault()
+    } else if (key === 'e') {
       flipSelected()
       event.preventDefault()
     } else if (key === 'x') {

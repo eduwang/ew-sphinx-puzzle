@@ -98,7 +98,10 @@ export class PuzzleScene {
 
     this.mobileActionBar = setupMobileActionBar({
       enableDelete,
-      onRotate: () => this.interaction.rotateSelected(),
+      onRotateClockwise: () =>
+        this.interaction.rotateSelected({ clockwise: true }),
+      onRotateCounterClockwise: () =>
+        this.interaction.rotateSelected({ clockwise: false }),
       onFlip: () => this.interaction.flipSelected(),
       onDelete: () => this.interaction.deleteSelected(),
     })

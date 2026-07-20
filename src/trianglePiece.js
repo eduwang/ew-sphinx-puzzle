@@ -492,11 +492,14 @@ export function getPiecePivotWorld(piece) {
 
 /**
  * 평면(XY)에서 30° 회전.
- * 기본은 시계방향, 뒤집힌 상태(scale.x < 0)에서는 화면 기준 반대 방향으로 돕니다.
+ * clockwise=true면 화면 기준 시계 방향.
+ * 뒤집힌 상태(scale.x < 0)에서는 델타를 뒤집어 화면 기준 방향이 유지되게 합니다.
  * 피벗(초기 생성 기준 가장 왼쪽 점)을 중심으로 돕니다.
  */
-export function rotatePiece(piece) {
-  const delta = -Math.PI / 6
+export function rotatePiece(piece, { clockwise = true } = {}) {
+  const facing = Math.sign(piece.scale.x || 1)
+  let delta = clockwise ? -Math.PI / 6 : Math.PI / 6
+  if (facing < 0) delta = -delta
 
   const pivotWorld = getPiecePivotWorld(piece)
   piece.rotation.z += delta
